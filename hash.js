@@ -17,10 +17,20 @@ const scrapeIOCHash = async (hash) => {
     console.log("web has been retrieved")
 
 
-    let { cs, lbl, tc, fl } = await page.evaluate(() => {
+    let { status, result } = await page.evaluate(() => {
       // Community Score
       // /html/body / vt - ui - shell / div[2] / file - view//vt-ui-main-generic-report/vt-ui-file-card//div/div[1]/div[1]/text()
       let vtShell = document.querySelector("vt-ui-shell");
+
+      // check if VT return error (normal, not by scrapping behaviour)
+      let customErrorView = vtShell.querySelector("custom-error-view")
+      if (customErrorView) {
+        return {
+          status: "vt error",
+          result: {}
+        }
+      }
+
       let fileView = vtShell.querySelector("file-view").shadowRoot;
       let genericReport = fileView.querySelector("vt-ui-main-generic-report");
 
@@ -59,15 +69,16 @@ const scrapeIOCHash = async (hash) => {
         fl.push(e.textContent.trim())
 
       return {
-        cs, lbl, tc, fl
+        status: "success",
+        result: {
+          cs, lbl, tc, fl
+        }
       }
     });
 
     const data = {
-      cs,
-      lbl,
-      tc,
-      fl,
+      status,
+      result,
       link: url,
       type: "h"
 
