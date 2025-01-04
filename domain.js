@@ -17,7 +17,7 @@ const scrapeIOCdomain = async (domain) => {
 
     await sleep(3000)
 
-    let { cs, reg } = await page.evaluate(() => {
+    let { status, result } = await page.evaluate(() => {
       // Community Score
       // /html/body/vt-ui-shell/div[2]/domain-view//vt-ui-main-generic-report//div/div[1]/div[1]/vt-ioc-score-widget//div/vt-ioc-score-widget-detections-chart//div/div
       let vtShell = document.querySelector("vt-ui-shell");
@@ -45,14 +45,16 @@ const scrapeIOCdomain = async (domain) => {
       let reg = domainCard.querySelector(".vstack.gap-2.my-auto > .hstack.gap-4 > div:nth-child(3) > a").textContent.trim()
 
       return {
-        cs,
-        reg
+        status: 'success',
+        result: {
+          cs,
+          reg
+        }
 
       }
     });
     const data = {
-      cs,
-      reg,
+      status, result,
       link: url,
       type: "d"
     }

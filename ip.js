@@ -13,7 +13,7 @@ const scrapeIOCIP = async (ip) => {
 
     await sleep(3000)
 
-    let { cs, as, img } = await page.evaluate(() => {
+    let { status, result } = await page.evaluate(() => {
       // Community Score
       // /html/body / vt - ui - shell / div[2] / file - view//vt-ui-main-generic-report/vt-ui-file-card//div/div[1]/div[1]/text()
       // /html/body/vt-ui-shell/div[2]/ip-address-view//vt-ui-main-generic-report/vt-ui-ip-card//div/div[1]/div[1]/text()
@@ -51,16 +51,18 @@ const scrapeIOCIP = async (ip) => {
       let img = ipCard.querySelector("#flag").src
 
       return {
-        cs,
-        as,
-        img
+        status: 'success',
+        result: {
+          cs,
+          as,
+          img
+        }
       }
     });
 
     const data = {
-      cs,
-      as,
-      img,
+      status,
+      result,
       link: url,
       type: "i"
     }
